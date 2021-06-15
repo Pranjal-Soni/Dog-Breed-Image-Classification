@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dog Breed Prediction</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1 class="text-center p-4 vh-200 bg-dark text-white">Dog Breed Classification</h1>
+    </header>
+    <main class="container border border-secondary mb-2">
+        <form>
+            <div class="form-group">
+                <label class="form-label" for="dogImage">Uplaod Image</label>
+                <input type="file" class="form-control" id="dogImage" />
+                <br>
+                <button class="btn btn-success" onclick="predictDogBreed()">Predict</button>
+            </div>
+
+        </form>
+        <div>
+            <h4 id="breed"></h4>
+            <h4 id="score"></h4>
+        </div>
+    </main>
+    <footer>
+        <div class="text-center p-1 vh-50 bg-dark text-white">Developed By @Pranjal Soni</div>
+    </footer>
+    
+</body>
+    <script>
+        breed = document.getElementById("breed")
+        score = document.getElementById("score")
+        function predictDogBreed(){
+            var img_file = document.getElementById("dogImage").files
+            var formData = new FormData();
+            var end_point = "/predict";
+            formData.append("file",img_file[0]);
+            
+        
+
+        $.ajax({
+            type:'POST',
+            url:end_point,
+            data:formData,
+            contentType:false,
+            cache:false,
+            processData:false,
+            
+
+            success: function(data){
+                swal({icon: "success",});
+                breed.innerHTML = data.breed;
+                score.innerHTML = data.prob;
+            }
+        });
+        
+    }
+    </script>
+</html>
