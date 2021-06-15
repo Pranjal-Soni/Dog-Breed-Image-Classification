@@ -10,9 +10,9 @@ import torch.nn as nn
 from torchvision import transforms
 from torchvision import models
 import torch.nn.functional as F
-from dog_breed_classification_model import DogBreedClassification
+from api.dog_breed_classification_model import DogBreedClassification
 
-templates = Jinja2Templates(directory="../templates/")
+templates = Jinja2Templates(directory="./templates/")
 
 dog_breeds = {0:'beagle', 1:'chihuahua', 2:'doberman',3:'french_bulldog', 4:'golden_retriever', \
                       5:'malamute', 6:'pug',7:'saint_bernard', 8:'scottish_deerhound',9:'tibetan_mastiff'}
@@ -45,7 +45,7 @@ transform = transforms.Compose([
 
 #load the model
 model = DogBreedClassification(len(dog_breeds))
-model.load_state_dict(torch.load("../model/dog_breed_classification.pth"))
+model.load_state_dict(torch.load("./model/dog_breed_classification.pth"))
 model.eval()
 
 app = FastAPI()
@@ -56,10 +56,10 @@ def home(request: Request):
 
 
 @app.post("/predict")
-async def fetch_predictions(file: UploadFile = File(...)):
+def fetch_predictions(file: UploadFile = File(...)):
     img = Image.open(io.BytesIO(file.file.read()))
     img = DogBreedImageDataset(img,transform=transform)
-    pred = torch.max(F.softmax(model.forward(torch.unsqueeze(img[0],dim=0))),axis=1)
+    pred = torch.max(F.softmax(model.forward(torch.unsqueeze(img[0],dim=0))),dim=1)
     score = pred.values.tolist()[0]
     idx = pred.indices.tolist()[0]
     return {"breed":dog_breeds[idx],"prob":score} 
