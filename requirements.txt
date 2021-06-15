@@ -1,6 +1,7 @@
+-f https://download.pytorch.org/whl/torch_stable.html
 flask
-torch==1.8.0
-torchvision==0.9.0
+torch==1.8.0+cpu 
+torchvision==0.9.0+cpu
 fastapi==0.65.2
 uvicorn
 python-multipart
